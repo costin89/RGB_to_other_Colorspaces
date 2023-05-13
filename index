@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>RGB to Hex, CMYK, LAB and HSV Converter</title>
+</head>
+<body>
+	<h1>RGB to Hex, CMYK, LAB and HSV Converter</h1>
+	<form>
+		<label for="red">Red:</label>
+		<input type="text" id="red" name="red"><br>
+
+		<label for="green">Green:</label>
+		<input type="text" id="green" name="green"><br>
+
+		<label for="blue">Blue:</label>
+		<input type="text" id="blue" name="blue"><br>
+
+		<button type="button" onclick="convert()">Convert</button><br><br>
+
+		<label for="hex">Hex:</label>
+		<label id="hex"></label><br>
+
+		<label for="cmyk">CMYK:</label>
+		<label id="cmyk"></label><br>
+
+		<label for="lab">LAB:</label>
+		<label id="lab"></label><br>
+
+		<label for="hsv">HSV:</label>
+		<label id="hsv"></label><br>
+	</form>
+
+	<script>
+		function convert() {
+			var red = parseInt(document.getElementById("red").value);
+			var green = parseInt(document.getElementById("green").value);
+			var blue = parseInt(document.getElementById("blue").value);
+
+			// Convert RGB to HEX
+			var hex = rgbToHex(red, green, blue);
+			document.getElementById("hex").innerHTML = hex;
+
+			// Convert RGB to CMYK
+			var cmyk = rgbToCmyk(red, green, blue);
+			document.getElementById("cmyk").innerHTML = cmyk;
+
+			// Convert RGB to LAB
+			var lab = rgbToLab(red, green, blue);
+			document.getElementById("lab").innerHTML = lab;
+
+			// Convert RGB to HSV
+			var hsv = rgbToHsv(red, green, blue);
+			document.getElementById("hsv").innerHTML = hsv;
+		}
+
+		// RGB to HEX conversion function
+		function rgbToHex(r, g, b) {
+			return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+		}
+
+		function componentToHex(c) {
+			var hex = c.toString(16);
+			return hex.length == 1 ? "0" + hex : hex;
+		}
+
+		// RGB to CMYK conversion function
+		function rgbToCmyk(r, g, b) {
+			r = r / 255;
+			g = g / 255;
+			b = b / 255;
+
+			var k = 1 - Math.max(r, g, b);
+			var c = (1 - r - k) / (1 - k);
+			var m = (1 - g - k) / (1 - k);
+			var y = (1 - b - k) / (1 - k);
+
+			return "C: " + (c * 100).toFixed(0) + "% M: " + (m * 100).toFixed(0) + "% Y: " + (y * 100).toFixed(0) + "% K: " + (k * 100).toFixed(0) + "%";
+    }
+    
+    	// RGB to LAB conversion function
+	function rgbToLab(r, g, b) {
+		// Convert RGB to XYZ
+		r = r / 255;
+		g = g / 255;
+		b = b / 255;
+
+		if (r > 0.04045) {
+			r = Math.pow(((r + 0.055) / 1.055), 2.4);
+		} else {
+			r = r / 12.92;
+		}
+
+		if (g > 0.04045) {
+			g = Math.pow(((g + 0.055) / 1.055), 2.4);
+		} else {
+			g = g / 12.92;
+		}
+
+		if (b > 0.04045) {
+			b = Math.pow(((b + 0.055) / 1.055), 2.4);
+		} else {
+			b = b / 12.92;
+		}
+
+		var x = r * 0.4124 + g * 0.3576 + b * 0.1805;
+		var y = r * 0.2126 + g * 0.7152 + b * 0.0722;
+		var z = r * 0.0193 + g * 0.1192 + b * 0.9505;
+
+		// Convert XYZ to LAB
+		x = x / 0.95047;
+		y = y / 1.00000;
+		z = z / 1.08883;
+
+		if (x > 0.008856) {
+			x = Math.pow(x, 1 / 3);
+		} else {
+			x = (7.787 * x) + (16 / 116);
+		}
+
+		if (y > 0.008856) {
+			y = Math.pow(y, 1 / 3);
+		} else {
+			y = (7.787 * y) + (16 / 116);
+		}
+
+		if (z > 0.008856) {
+			z = Math.pow(z, 1 / 3);
+		} else {
+			z = (7.787 * z) + (16 / 116);
+		}
+
+		var l = (116 * y) - 16;
+		var a = 500 * (x - y);
+		var b = 200 * (y - z);
+
+		return "L: " + l.toFixed(0) + " a: " + a.toFixed(0) + " b: " + b.toFixed(0);
+	}
+
+	// RGB to HSV conversion function
+	function rgbToHsv(r, g, b) {
+		r = r / 255;
+		g = g / 255;
+		b = b / 255;
+
+		var max = Math.max(r, g, b);
+		var min = Math.min(r, g, b);
+		var diff = max - min;
+
+		if (max == min) {
+			var h = 0;
+		} else if (max == r) {
+			var h = ((60 * ((g - b) / diff)) + 360) % 360;
+		} else if (max == g) {
+			var h = (60 * ((b - r) / diff)) + 120;
+		} else if (max == b) {
+			var h = (60 * ((r - g) / diff)) + 240;
+		}
+
+		var s = max == 0 ? 0 : diff / max;
+    var v = max;
+    
+    		return "H: " + h.toFixed(0) + " S: " + (s * 100).toFixed(0) + "% V: " + (v * 100).toFixed(0) + "%";
+	}
+
+	// Update the color labels when the input values change
+	function updateColorLabels() {
+		var r = parseInt(document.getElementById("red").value);
+		var g = parseInt(document.getElementById("green").value);
+		var b = parseInt(document.getElementById("blue").value);
+
+		document.getElementById("hex-label").innerHTML = rgbToHex(r, g, b);
+		document.getElementById("cmyk-label").innerHTML = rgbToCmyk(r, g, b);
+		document.getElementById("lab-label").innerHTML = rgbToLab(r, g, b);
+		document.getElementById("hsv-label").innerHTML = rgbToHsv(r, g, b);
+	}
+</script>
+</head>
+<body>
+	<h1>Color Converter</h1>
+	<form>
+		<label for="red">Red:</label>
+		<input type="text" id="red" name="red" value="255" onchange="updateColorLabels()">
+		<label for="green">Green:</label>
+		<input type="text" id="green" name="green" value="255" onchange="updateColorLabels()">
+		<label for="blue">Blue:</label>
+		<input type="text" id="blue" name="blue" value="255" onchange="updateColorLabels()">
+	</form>
+	<div>
+		<h2>Color Values:</h2>
+		<p>Hex: <span id="hex-label"></span></p>
+		<p>CMYK: <span id="cmyk-label"></span></p>
+		<p>LAB: <span id="lab-label"></span></p>
+		<p>HSV: <span id="hsv-label"></span></p>
+	</div>
+</body>
+</html>
+
+
+
