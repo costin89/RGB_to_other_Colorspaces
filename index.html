@@ -4,32 +4,6 @@
 	<title>RGB to Hex, CMYK, LAB and HSV Converter</title>
 </head>
 <body>
-	<h1>RGB to Hex, CMYK, LAB and HSV Converter</h1>
-	<form>
-		<label for="red">Red:</label>
-		<input type="text" id="red" name="red"><br>
-
-		<label for="green">Green:</label>
-		<input type="text" id="green" name="green"><br>
-
-		<label for="blue">Blue:</label>
-		<input type="text" id="blue" name="blue"><br>
-
-		<button type="button" onclick="convert()">Convert</button><br><br>
-
-		<label for="hex">Hex:</label>
-		<label id="hex"></label><br>
-
-		<label for="cmyk">CMYK:</label>
-		<label id="cmyk"></label><br>
-
-		<label for="lab">LAB:</label>
-		<label id="lab"></label><br>
-
-		<label for="hsv">HSV:</label>
-		<label id="hsv"></label><br>
-	</form>
-
 	<script>
 		function convert() {
 			var red = parseInt(document.getElementById("red").value);
